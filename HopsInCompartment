@@ -1,0 +1,41 @@
+/*
+    * compartments is a hashmap of compartments with keys being serial
+    * numbers of each compartment from 0..n, and values being JetPack threshold for
+    * each compartment. thesisIn holds the value for where the thesis is placed/hidden in
+    * a particular compartment.*/
+    
+private fun calculateNumberOfHops(compartments:HashMap<Int,Int>,thesisIn:Int){
+        var initialCompartmentNumber = 0
+        val hopWithThresholdCalculator = sortedMapOf<Int, Int>({ t, t2 -> t2.compareTo(t) })
+        var hops = 0
+        while (initialCompartmentNumber < thesisIn) {
+            if (initialCompartmentNumber + compartments[initialCompartmentNumber]!! >= thesisIn) {
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "$hops",
+                    Snackbar.LENGTH_INDEFINITE
+                ).show()
+                return
+            } else {
+                for (j in initialCompartmentNumber + 1..compartments[initialCompartmentNumber]!! + initialCompartmentNumber) {
+                    hopWithThresholdCalculator[compartments[initialCompartmentNumber]!! + compartments[j]!!] = j
+                }
+                val highestSum = hopWithThresholdCalculator.firstKey()
+                if (hopWithThresholdCalculator[highestSum]!! < thesisIn) {
+                    hops += (hopWithThresholdCalculator[highestSum]!!-initialCompartmentNumber)
+                    initialCompartmentNumber = hopWithThresholdCalculator[highestSum]!!
+                    if(hops<thesisIn-1 && compartments[initialCompartmentNumber]!!+hops>=thesisIn-1){
+                        hops++
+                        Snackbar.make(
+                            findViewById(android.R.id.content),
+                            "$hops",
+                            Snackbar.LENGTH_INDEFINITE
+                        ).show()
+                    }
+
+                }
+            }
+        }
+    }
+    
+    
